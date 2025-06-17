@@ -1,0 +1,112 @@
+/* frontend-simec/src/styles/pages/unidades.css */
+
+.search-input-table {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--cor-borda-light);
+  min-width: 300px;
+  font-size: 0.9em;
+}
+
+body.dark-mode .search-input-table {
+  background-color: var(--cor-fundo-card-dark);
+  border-color: var(--cor-borda-dark);
+  color: var(--cor-texto-principal-dark);
+}
+
+.unidades-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.unidade-card {
+  background-color: var(--cor-fundo-card-light);
+  border: 1px solid var(--cor-borda-light);
+  border-radius: 8px;
+  box-shadow: var(--sombra-card-light);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.unidade-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--sombra-card-hover-light);
+}
+
+body.dark-mode .unidade-card {
+  background-color: var(--cor-fundo-card-dark);
+  border-color: var(--cor-borda-dark);
+  box-shadow: var(--sombra-card-dark);
+}
+
+body.dark-mode .unidade-card:hover {
+  box-shadow: var(--sombra-card-hover-dark);
+}
+
+.unidade-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  border-bottom: 1px solid var(--cor-borda-light);
+}
+
+body.dark-mode .unidade-card-header {
+  border-bottom-color: var(--cor-borda-dark);
+}
+
+.unidade-card-header h4 {
+  margin: 0;
+  font-size: 1.1em;
+  color: var(--cor-texto-principal-light);
+}
+
+body.dark-mode .unidade-card-header h4 {
+  color: var(--cor-texto-principal-dark);
+}
+
+.unidade-card-actions .btn-action {
+  margin-left: 5px;
+}
+
+.unidade-card-body {
+  padding: 15px;
+  flex-grow: 1;
+}
+
+.unidade-info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.9em;
+  color: var(--cor-texto-secundario-light);
+  margin-bottom: 12px;
+}
+
+body.dark-mode .unidade-info-item {
+  color: var(--cor-texto-secundario-dark);
+}
+
+.unidade-info-item .svg-inline--fa {
+  margin-top: 4px;
+  color: var(--cor-primaria-light);
+  width: 16px;
+  text-align: center;
+}
+
+body.dark-mode .unidade-info-item .svg-inline--fa {
+  color: var(--cor-primaria-dark);
+}
+
+.unidade-info-item strong {
+  display: block;
+  font-weight: 500;
+  color: var(--cor-texto-principal-light);
+}
+
+body.dark-mode .unidade-info-item strong {
+  color: var(--cor-texto-principal-dark);
+}

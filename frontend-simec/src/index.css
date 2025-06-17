@@ -1,0 +1,28 @@
+/* Ficheiro: src/index.css */
+/*
+  ==============================================================
+  |                     ARQUIVO MESTRE DE CSS                    |
+  ==============================================================
+*/
+
+/* ===== ESTILOS GLOBAIS PRIMEIRO ===== */
+@import './styles/global.css';
+
+/* ===== ESTRUTURA E LAYOUT ===== */
+@import './styles/layout.css';
+
+/* ===== COMPONENTES DE UI REUTILIZÁVEIS ===== */
+@import './styles/components/sidebar.css';
+@import './styles/components/ui-elements.css';
+@import './styles/components/forms.css';
+@import './styles/components/modal.css';
+@import './styles/components/tables.css';
+@import './styles/components/tabs.css';
+@import './styles/components/GlobalFilterBar.css';
+@import './styles/components/toast.css';
+
+/* ===== ESTILOS ESPECÍFICOS DE PÁGINAS ===== */
+@import './styles/pages/dashboard.css';
+@import './styles/pages/alertas.css';
+@import './styles/pages/login.css';
+@import './styles/pages/unidades.css';

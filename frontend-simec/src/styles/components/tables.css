@@ -1,0 +1,217 @@
+/*
+   Ficheiro: src/styles/components/tables.css
+   Descrição: Estilo de UI Sênior, com alinhamento de grade perfeito e classes utilitárias.
+   Versão: 3.3 (Centralização Declarativa)
+*/
+
+/* ==========================================================================
+   1. CLASSES DE ALINHAMENTO UTILITÁRIAS
+   ========================================================================== */
+.text-left   { text-align: left !important; }
+.text-center { text-align: center !important; }
+.text-right  { text-align: right !important; }
+
+/* ==========================================================================
+   2. CONTAINER PRINCIPAL (CARD)
+   ========================================================================== */
+.data-table-container { background-color: #fff; border-radius: 12px; padding: 20px 0; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); border: 1px solid var(--cor-borda-light); }
+
+/* ==========================================================================
+   3. CABEÇALHO DE AÇÕES E FILTROS
+   ========================================================================== */
+.table-actions-header, .filters-container { padding-left: 24px; padding-right: 24px; }
+.table-actions-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--cor-borda-light); }
+.filters-container { margin-bottom: 20px; }
+.item-count { font-size: 1rem; font-weight: 500; color: var(--cor-texto-principal-light); }
+
+/* ==========================================================================
+   4. ESTILO DA TABELA GERAL
+   ========================================================================== */
+.table-responsive-wrapper { width: 100%; overflow-x: auto; }
+.data-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+.data-table th, .data-table td { padding: 14px 12px; vertical-align: middle; border-bottom: 1px solid var(--cor-borda-light); color: #343a40; }
+.data-table th:first-child, .data-table td:first-child { padding-left: 24px; }
+.data-table th:last-child, .data-table td:last-child { padding-right: 24px; }
+.data-table tbody tr:last-child td { border-bottom: none; }
+.data-table tbody tr:not([class*="status-row-"]):hover { background-color: #f8f9fa; }
+.actions-cell {
+  /* >> CORREÇÕES APLICADAS AQUI << */
+  display: flex;             /* Habilita o Flexbox para os botões dentro da célula */
+  justify-content: center;   /* Centraliza o grupo de botões */
+  align-items: center;       /* Alinha verticalmente os botões no meio da célula */
+  gap: 8px;                  /* Adiciona um espaço consistente entre os botões */
+  white-space: nowrap;       /* Garante que os botões não quebrem para a próxima linha */
+}
+
+/* --- Cabeçalho da Tabela --- */
+.data-table thead th { background-color: var(--cor-sidebar-bg-light); color: var(--cor-sidebar-texto-hover-light); font-weight: 600; text-transform: uppercase; font-size: 0.8em; letter-spacing: 0.5px; border-bottom: 1px solid var(--cor-borda-dark); }
+.data-table thead th.sortable-header { cursor: pointer; transition: background-color 0.2s ease; }
+.data-table thead th.sortable-header:hover { background-color: #2c3e50; }
+.data-table thead th .sort-arrow { margin-left: 8px; color: var(--cor-sidebar-texto-light); opacity: 0.8; }
+.data-table thead th .sort-arrow.fa-sort-up, .data-table thead th .sort-arrow.fa-sort-down { color: #ffffff; opacity: 1; }
+
+/* ==========================================================================
+   5. ESTILIZAÇÃO DE LINHA E STATUS
+   ========================================================================== */
+.data-table tbody tr[class*="status-row-"] { border-left: 5px solid transparent; }
+.data-table tbody tr[class*="status-row-"]:hover { background-color: inherit !important; filter: brightness(0.97); }
+.data-table tbody tr.status-row-operante    { background-color: #eaf7ec; border-left-color: #28a745; }
+.data-table tbody tr.status-row-inoperante  { background-color: #fbe9e9; border-left-color: #dc3545; }
+.data-table tbody tr.status-row-usolimitado { background-color: #fff4e6; border-left-color: #fd7e14; }
+.data-table tbody tr.status-row-emmanutencao { background-color: #fffbeb; border-left-color: #ffc107; }
+
+/* --- Seletor de Status na Tabela --- */
+.status-selector-wrapper { display: inline-block; } /* Necessário para o alinhamento central funcionar bem */
+.status-selector-wrapper .status-select { font-weight: 600; padding: 6px 28px 6px 12px; border: 1px solid rgba(0,0,0,0.1); border-radius: 6px; font-size: 0.8rem; cursor: pointer; -webkit-appearance: none; -moz-appearance: none; appearance: none; background-color: rgba(255,255,255,0.6); background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%236c757d%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.4-12.9z%22%2F%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right 10px center; background-size: 8px; transition: border-color 0.2s; }
+.status-selector-wrapper .status-select:hover { border-color: rgba(0,0,0,0.3); }
+.status-select.status-select-operante    { color: #218838; }
+.status-select.status-select-inoperante  { color: #c82333; }
+.status-select.status-select-usolimitado { color: #e65100; }
+.status-select.status-select-emmanutencao { color: #e0a800; }
+
+/* ==========================================================================
+   6. ÍCONES DE AÇÃO E MENSAGENS
+   ========================================================================== */
+.btn-action { background: none; border: none; cursor: pointer; padding: 6px; margin: 0 2px; font-size: 0.9rem; border-radius: 50%; width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s ease; }
+.btn-action.view   { color: var(--cor-info); }
+.btn-action.edit   { color: var(--cor-aviso); }
+.btn-action.delete { color: var(--cor-perigo); }
+.btn-action:hover { transform: translateY(-2px); background-color: #e9ecef; }
+.table-message { text-align: center; padding: 40px; font-size: 1rem; color: #6c757d; }
+/* ==========================================================================
+   6. MENSAGENS E DARK MODE
+   ========================================================================== */
+.table-message { text-align: center; padding: 40px; font-size: 1rem; color: #6c757d; }
+body.dark-mode .data-table-container { background-color: var(--cor-fundo-card-dark); border-color: var(--cor-borda-dark); }
+body.dark-mode .table-actions-header { border-bottom-color: var(--cor-borda-dark); }
+body.dark-mode .item-count { color: var(--cor-texto-principal-dark); }
+body.dark-mode .data-table th, body.dark-mode .data-table td { border-bottom-color: var(--cor-borda-dark); color: #adb5bd; }
+body.dark-mode .data-table tbody tr:not([class*="status-row-"]):hover { background-color: rgba(255, 255, 255, 0.05); }
+body.dark-mode .data-table thead th { background-color: var(--cor-sidebar-bg-dark); color: #e9ecef; border-color: #495057; }
+body.dark-mode .btn-action:hover { background-color: #34495e; }
+
+/* ==========================================================================
+   ESTILOS EXCLUSIVOS PARA A TABELA DE MANUTENÇÕES
+   ========================================================================== */
+
+/* Aplica o alinhamento central apenas para a tabela com a classe .manutencoes-table */
+.manutencoes-table th,
+.manutencoes-table td {
+  text-align: center;
+}
+
+/* Sobrescreve para alinhar colunas específicas à esquerda para melhor leitura */
+.manutencoes-table th:nth-child(2), /* Equipamento */
+.manutencoes-table td:nth-child(2),
+.manutencoes-table th:nth-child(6), /* Unidade */
+.manutencoes-table td:nth-child(6) {
+  text-align: center;
+}
+
+/* Alinha a coluna de ações à direita */
+.manutencoes-table th:last-child,
+.manutencoes-table td:last-child {
+  text-align: center;
+}
+/* Ficheiro: src/styles/components/tables.css */
+.table-header-actions {
+  display: flex;
+  justify-content: space-between; /* Esta regra separa o primeiro filho (span) do último filho (botão) */
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--cor-borda-light);
+}
+
+
+/* >> CLASSES PARA O STATUS DA MANUTENÇÃO << */
+.data-table tbody tr.status-row-os-agendada { 
+  background-color: #f0fdf4; /* Verde claro */
+  border-left-color: var(--btn-success-bg-light); 
+}
+.data-table tbody tr.status-row-os-emandamento { 
+  background-color: #fefce8; /* Amarelo claro */
+  border-left-color: var(--btn-warning-bg-light);
+}
+.data-table tbody tr.status-row-os-cancelada { 
+  background-color: #fef2f2; /* Vermelho claro */
+  border-left-color: var(--btn-danger-bg-light);
+}
+
+.data-table tbody tr.status-row-os-concluida { 
+  background-color: #d8dde2; /* Um cinza bem claro, para indicar finalização */
+  border-left-color: #64748b; 
+}
+/* Dark Mode Correspondente */
+body.dark-mode .data-table tbody tr.status-row-os-agendada { background-color: #1a2e2a; border-left-color: #22c55e; }
+body.dark-mode .data-table tbody tr.status-row-os-emandamento { background-color: #3b2f0a; border-left-color: #f59e0b; }
+body.dark-mode .data-table tbody tr.status-row-os-cancelada { background-color: #3c1e1f; border-left-color: #ef4444; }
+body.dark-mode .data-table tbody tr.status-row-os-concluida { background-color: #1e293b; border-left-color: #94a3b8;}
+
+/* ==========================================================================
+   7. DESTAQUE DE LINHA PARA STATUS DE CONTRATO/SEGURO
+   ========================================================================== */
+
+/* Regra base para garantir que o hover funcione bem */
+.data-table tbody tr[class*="status-row-vencendo"]:hover,
+.data-table tbody tr.status-row-ativo:hover {
+    filter: brightness(0.97); /* Escurece levemente a cor no hover */
+}
+
+/* VERDE - Contrato OK */
+.data-table tbody tr.status-row-ativo { 
+  /* Aplicamos a cor de fundo à linha inteira (tr) */
+  background-color: #f0fdf4; 
+  border-left: 5px solid var(--btn-success-bg-light); 
+}
+
+/* AMARELO - Vence em breve */
+.data-table tbody tr.status-row-vencendo-warning { 
+  background-color: #fefce8; 
+  border-left: 5px solid var(--btn-warning-bg-light);
+}
+
+/* VERMELHO - Prestes a vencer / Expirado */
+.data-table tbody tr.status-row-vencendo-danger { 
+  background-color: #fef2f2; 
+  border-left: 5px solid var(--btn-danger-bg-light);
+}
+
+/* Garante que o texto permaneça legível em fundos coloridos */
+.data-table tbody tr[class*="status-row-"] td {
+    color: var(--cor-texto-principal-light);
+    font-weight: 500;
+}
+
+
+/* --- Dark Mode Correspondente --- */
+body.dark-mode .data-table tbody tr.status-row-ativo { 
+    background-color: #1a2e2a; 
+    border-left-color: var(--btn-success-bg-dark); 
+}
+body.dark-mode .data-table tbody tr.status-row-vencendo-warning { 
+    background-color: #3b2f0a; 
+    border-left-color: var(--btn-warning-bg-dark); 
+}
+body.dark-mode .data-table tbody tr.status-row-vencendo-danger { 
+    background-color: #3c1e1f; 
+    border-left-color: var(--btn-danger-bg-dark); 
+}
+body.dark-mode .data-table tbody tr[class*="status-row-"] td {
+    color: var(--cor-texto-principal-dark);
+}
+
+/* ==========================================================================
+   8. ESTILOS ESPECÍFICOS PARA A TABELA DE RELATÓRIOS
+   ========================================================================== */
+
+/*
+  Cria um "escopo" para a tabela de relatório usando a classe do container.
+  Isso garante que apenas as tabelas dentro de um 'relatorio-resultado-container'
+  sejam afetadas por estas regras.
+*/
+
+.relatorio-resultado-container .data-table th,
+.relatorio-resultado-container .data-table td {
+  text-align: center;
+  vertical-align: middle; /* Opcional: Garante um alinhamento vertical perfeito */
+}

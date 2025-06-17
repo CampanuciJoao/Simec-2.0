@@ -1,0 +1,11 @@
+# Ficheiro: simec/frontend-simec/.gitignore
+
+# Dependências
+node_modules
+
+# Ficheiros de build (produção)
+dist
+.vite
+
+# Logs e ficheiros temporários
+npm-debug.log

@@ -1,0 +1,251 @@
+/* INÍCIO DO ARQUIVO COMPLETO: src/styles/global.css */
+
+/* ====================================================== */
+/* ===== DEFINIÇÃO DE VARIÁVEIS CSS (PALETA REFINADA) ===== */
+/* ====================================================== */
+:root {
+    /* MODO LIGHT (PADRÃO) */
+    --cor-primaria-light: #4A90E2; 
+    --cor-primaria-hover-light: #357ABD;
+    
+    --cor-sidebar-bg-light: #1E293B; 
+    --cor-sidebar-texto-light: #CBD5E1; 
+    --cor-sidebar-texto-hover-light: #FFFFFF;
+    --cor-sidebar-ativo-bg-light: var(--cor-primaria-light);
+    --cor-sidebar-ativo-texto-light: #FFFFFF;
+
+    --cor-fundo-pagina-light: #F0F4F8; 
+    --cor-fundo-card-light: #FFFFFF; 
+    --cor-texto-principal-light: #0F172A; 
+    --cor-texto-secundario-light: #64748B; 
+    --cor-borda-light: #E2E8F0; 
+    
+    --sombra-card-light: 0 2px 5px 0 rgba(0, 0, 0, 0.08), 0 1px 3px -1px rgba(0, 0, 0, 0.06);
+    --sombra-card-hover-light: 0 6px 12px -3px rgba(0, 0, 0, 0.07), 0 4px 8px -4px rgba(0, 0, 0, 0.05);
+
+    --status-ativo-bg-light: #DCFCE7;
+    --status-ativo-texto-light: #166534;
+    --status-manutencao-bg-light: #FEF9C3;
+    --status-manutencao-texto-light: #713F12;
+    --status-inativo-bg-light: #FFE4E6;
+    --status-inativo-texto-light: #881337;
+    --status-descontinuado-bg-light: #F1F5F9;
+    --status-descontinuado-texto-light: #334155;
+    --status-pendente-bg-light: #FFEDD5;
+    --status-pendente-texto-light: #7C2D12;
+    
+    --status-operando-com-limitacoes-bg-light: var(--status-manutencao-bg-light);
+    --status-operando-com-limitacoes-texto-light: var(--status-manutencao-texto-light);
+
+    --status-default-bg-light: #F8FAFC;
+    --status-default-texto-light: var(--cor-texto-secundario-light);
+
+    /* Badges de Status para Manutenções (OS) */
+    --status-os-agendada-bg-light: var(--cor-primaria-light);
+    --status-os-agendada-texto-light: white;
+    --status-os-emandamento-bg-light: var(--btn-warning-bg-light);
+    --status-os-emandamento-texto-light: var(--btn-warning-texto-light);
+    --status-os-concluida-bg-light: var(--btn-success-bg-light);
+    --status-os-concluida-texto-light: white;
+    --status-os-cancelada-bg-light: var(--btn-danger-bg-light);
+    --status-os-cancelada-texto-light: white;
+    --status-os-atrasada-bg-light: var(--btn-danger-bg-light);
+    --status-os-atrasada-texto-light: white;
+
+    --status-os-aguardando-confirmacao-bg-light: var(--status-os-emandamento-bg-light);
+    --status-os-aguardando-confirmacao-texto-light: var(--status-os-emandamento-texto-light);
+
+
+    --btn-success-bg-light: #22C55E;
+    --btn-success-hover-bg-light: #1aa04c;
+    --btn-warning-bg-light: #FACC15;
+    --btn-warning-hover-bg-light: #e6b800;
+    --btn-warning-texto-light: #713F12; 
+    --btn-danger-bg-light: #EF4444;
+    --btn-danger-hover-bg-light: #d93030;
+
+    --status-select-bg-light: rgba(255,255,255,0.7);
+    --status-select-border-light: rgba(0,0,0,0.1);
+
+    --grafico-texto-legenda-light: var(--cor-texto-secundario-light);
+
+    --max-width-page-content: 1200px;
+    --cor-primaria-light-rgb: 74, 144, 226;
+}
+
+/* MODO DARK */
+body.dark-mode {
+    --cor-primaria-dark: #60A5FA; 
+    --cor-primaria-hover-dark: #3B82F6; 
+    
+    --cor-sidebar-bg-dark: #0F172A; 
+    --cor-sidebar-texto-dark: #94A3B8; 
+    --cor-sidebar-texto-hover-dark: #E2E8F0; 
+    --cor-sidebar-ativo-bg-dark: var(--cor-primaria-dark);
+    --cor-sidebar-ativo-texto-dark: #0F172A;
+
+    --cor-fundo-pagina-dark: #0B1120; 
+    --cor-fundo-card-dark: #1E293B; 
+    --cor-texto-principal-dark: #E2E8F0; 
+    --cor-texto-secundario-dark: #94A3B8; 
+    --cor-borda-dark: #334155; 
+
+    --sombra-card-dark: 0 2px 5px 0 rgba(0, 0, 0, 0.2), 0 1px 3px -1px rgba(0, 0, 0, 0.15);
+    --sombra-card-hover-dark: 0 6px 12px -3px rgba(0, 0, 0, 0.25), 0 4px 8px -4px rgba(0, 0, 0, 0.2);
+
+    --status-ativo-bg-dark: #166534; 
+    --status-ativo-texto-dark: #DCFCE7; 
+    --status-manutencao-bg-dark: #713F12;
+    --status-manutencao-texto-dark: #FEF9C3;
+    --status-inativo-bg-dark: #881337;
+    --status-inativo-texto-dark: #FFE4E6;
+    --status-descontinuado-bg-dark: #334155;
+    --status-descontinuado-texto-dark: #F1F5F9;
+    --status-pendente-bg-dark: #7C2D12;
+    --status-pendente-texto-dark: #FFEDD5;
+    
+    --status-operando-com-limitacoes-bg-dark: var(--status-manutencao-bg-dark);
+    --status-operando-com-limitacoes-texto-dark: var(--status-manutencao-texto-dark);
+    
+    --status-default-bg-dark: #374151; 
+    --status-default-texto-dark: var(--cor-texto-secundario-dark);
+
+    /* Badges de Status para Manutenções - Dark Mode */
+    --status-os-agendada-bg-dark: var(--cor-primaria-dark);
+    --status-os-agendada-texto-dark: var(--cor-sidebar-ativo-texto-dark);
+    --status-os-emandamento-bg-dark: var(--btn-warning-bg-dark);
+    --status-os-emandamento-texto-dark: var(--btn-warning-texto-dark);
+    --status-os-concluida-bg-dark: var(--btn-success-bg-dark);
+    --status-os-concluida-texto-dark: white;
+    --status-os-cancelada-bg-dark: var(--btn-danger-bg-dark);
+    --status-os-cancelada-texto-dark: white;
+    --status-os-atrasada-bg-dark: var(--btn-danger-bg-dark);
+    --status-os-atrasada-texto-dark: white;
+
+    --status-os-aguardando-confirmacao-bg-dark: var(--status-os-emandamento-bg-dark);
+    --status-os-aguardando-confirmacao-texto-dark: var(--status-os-emandamento-texto-dark);
+
+    --btn-success-bg-dark: #16A34A;
+    --btn-success-hover-bg-dark: #15803d;
+    --btn-warning-bg-dark: #D97706;
+    --btn-warning-hover-bg-dark: #B45309;
+    --btn-warning-texto-dark: #FEF3C7; 
+    --btn-danger-bg-dark: #DC2626;
+    --btn-danger-hover-bg-dark: #B91C1C;
+
+    --status-select-bg-dark: rgba(40,50,70,0.7);
+    --status-select-border-dark: rgba(255,255,255,0.1);
+    
+    --grafico-texto-legenda-dark: var(--cor-texto-secundario-dark);
+    --cor-primaria-dark-rgb: 96, 165, 250;
+}
+
+/* ===== ESTILOS GERAIS ===== */
+body {
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+    background-color: var(--cor-fundo-pagina-light);
+    color: var(--cor-texto-principal-light);
+    min-height: 100vh;
+    line-height: 1.6;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+body.dark-mode {
+    background-color: var(--cor-fundo-pagina-dark);
+    color: var(--cor-texto-principal-dark);
+}
+
+/* ============================================================== */
+/* >> ESTILOS PARA IMPRESSÃO DE RELATÓRIO (VERSÃO FINAL) << */
+/* ============================================================== */
+@media print {
+  body {
+    background-color: #fff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Esconde a sidebar, os botões de ação e qualquer elemento com a classe .no-print */
+  .sidebar, .header-actions, .no-print {
+    display: none !important;
+  }
+
+  /* Garante que o conteúdo principal ocupe toda a largura da página */
+  .main-content {
+    margin: 0 !important;
+    padding: 25px !important; /* Margem interna da folha de papel */
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  
+  .page-content-wrapper {
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+  
+  /* Remove sombras e ajusta bordas para um visual de relatório */
+  .page-section {
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+    margin-bottom: 20px;
+    padding: 15px !important;
+    page-break-inside: avoid; /* Tenta não quebrar seções no meio da página */
+  }
+  
+  /* Cabeçalho que só aparece na impressão */
+  .print-header {
+    display: flex !important; /* Força a exibição na impressão */
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #000;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+
+  .print-header h1 {
+    font-size: 1.8em;
+    margin: 0;
+    color: #000 !important;
+  }
+  .print-header .os-info {
+    text-align: right;
+  }
+  .print-header .os-info p {
+    margin: 0;
+    font-size: 1.1em;
+    font-weight: bold;
+  }
+  
+  /* Ajustes de link para impressão */
+  a, a:visited {
+    text-decoration: none;
+    color: #000 !important;
+  }
+  /* Remove as URLs dos links para um visual mais limpo */
+  a[href]:after { content: ""; }
+  a[href^="/"]:after, a[href^="#"]:after { content: ""; }
+
+  /* Padroniza fontes e cores para impressão */
+  body, .page-section, p, li, td, th {
+    font-size: 10pt !important;
+    color: #000 !important;
+    background: #fff !important;
+  }
+  
+  .info-grid p {
+    border-bottom: 1px dotted #ccc !important;
+  }
+
+  .list-group {
+    border: 1px solid #ccc !important;
+  }
+  .list-group-item {
+    border-bottom: 1px solid #ccc !important;
+  }
+}
+
+/* Esconde o cabeçalho de impressão na visualização normal */
+.print-header {
+  display: none;
+}

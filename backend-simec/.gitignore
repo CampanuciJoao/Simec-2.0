@@ -1,0 +1,10 @@
+# Ficheiro: simec/backend-simec/.gitignore
+
+# Dependências
+node_modules
+
+# Ficheiro de Ambiente (MUITO IMPORTANTE)
+.env
+
+# Logs e ficheiros temporários
+npm-debug.log

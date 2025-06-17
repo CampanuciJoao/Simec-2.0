@@ -1,0 +1,163 @@
+/* frontend-dashboard/src/styles/pages/dashboard.css */
+
+/* --- Cards de Resumo (Dashboard) --- */
+.summary-cards {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 25px; 
+    margin-bottom: 50px; 
+}
+.card-link { text-decoration: none; color: inherit; display: flex; flex: 1; outline: none; border-radius: 8px; }
+.card-link .card { width: 100%; height: 100%; }
+
+.card { 
+    background-color: var(--cor-fundo-card-light);
+    padding: 10px; 
+    border-radius: 8px;
+    box-shadow: var(--sombra-card-light); 
+    display: flex;
+    align-items: center;
+    transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out, background-color 0.2s ease-in-out;
+    cursor: pointer;
+    border: 1px solid var(--cor-borda-light); 
+}
+.card:hover { transform: translateY(-2px); box-shadow: var(--sombra-card-hover-light); }
+body.dark-mode .card {
+    background-color: var(--cor-fundo-card-dark);
+    box-shadow: var(--sombra-card-dark);
+    border: 1px solid var(--cor-borda-dark); 
+}
+body.dark-mode .card:hover { box-shadow: var(--sombra-card-hover-dark); }
+
+.card .card-icon {
+    font-size: 1.4em; 
+    color: var(--cor-primaria-light);
+    background-color: rgba(var(--cor-primaria-light-rgb), 0.1);
+    padding: 13px; 
+    border-radius: 50%;
+    margin-right: 15px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px; 
+    height: 48px; 
+}
+body.dark-mode .card .card-icon { color: var(--cor-primaria-dark); background-color: rgba(var(--cor-primaria-dark-rgb), 0.15); }
+.card .card-text-content { display: flex; flex-direction: column; }
+.card .card-title {
+    color: var(--cor-texto-secundario-light);
+    font-size: 0.75em; 
+    font-weight: 400; 
+    text-transform: uppercase;
+    opacity: 0.8;
+    margin-bottom: 2px;
+    line-height: 1.2;
+}
+body.dark-mode .card .card-title { color: var(--cor-texto-secundario-dark); }
+.card .card-value {
+    font-size: 1.7em; 
+    font-weight: 600;
+    color: var(--cor-texto-principal-light);
+    line-height: 1.1;
+}
+body.dark-mode .card .card-value { color: var(--cor-texto-principal-dark); }
+
+
+/* --- Seção Detalhada do Dashboard (Alertas e Gráficos) --- */
+.detailed-sections {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: stretch; 
+    gap: 25px; 
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 25px;
+}
+.alerts-section.page-section,
+.charts-section.page-section { 
+    flex-grow: 1;  
+    flex-shrink: 1; 
+    flex-basis: 0;
+    display: flex; 
+    flex-direction: column;
+    padding-top: 20px; 
+}
+.alerts-section.page-section {
+    min-width: 280px; 
+}
+.charts-section.page-section {
+    min-width: 350px;
+}
+
+.alerts-section.page-section h2,
+.charts-section.page-section h2 {
+     font-size: 0.9em; 
+}
+
+.alerts-section .alerts-list {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+.alerts-list ul { list-style: none; padding: 0; margin: 0; }
+.alerts-list li {
+    font-size: 0.8em; 
+    padding: 8px 0;
+    border-bottom: 1px solid var(--cor-borda-light);
+    display: flex;
+    align-items: center;
+    color: var(--cor-texto-secundario-light);
+}
+.alerts-list li:last-child { border-bottom: none; }
+body.dark-mode .alerts-list li {
+    border-bottom-color: var(--cor-borda-dark);
+    color: var(--cor-texto-secundario-dark);
+}
+.alerts-list .alert-icon { margin-right: 10px; color: #FACC15; font-size: 1.1em; min-width: 16px; text-align: center; }
+
+.charts-section .chart-container-dashboard {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; 
+}
+.charts-section .chart-container-dashboard h2 { 
+    font-size: 1em; 
+    color: var(--cor-texto-principal-light); 
+    padding-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 10px; 
+    border-bottom: none; 
+    font-weight: 500; 
+    text-transform: none; 
+    letter-spacing: normal;
+}
+body.dark-mode .charts-section .chart-container-dashboard h2 {
+    color: var(--cor-texto-principal-dark);
+}
+
+.chart-wrapper {
+    position: relative;
+    height: 100%; 
+    width: 100%;
+    flex-grow: 1; 
+    min-height: 150px;
+}
+.chart-wrapper > canvas { 
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.chart-separator {
+    border: none;
+    border-top: 1px solid var(--cor-borda-light);
+    margin: 20px 0; 
+}
+body.dark-mode .chart-separator {
+    border-top-color: var(--cor-borda-dark);
+}

@@ -1,0 +1,311 @@
+// Ficheiro: simec/backend-simec/prisma/schema.prisma
+// Versão: 11.1 (Sênior - Alertas Individuais por Usuário e Limpeza - StatusSeguro Adicionado)
+// Descrição: Define a estrutura completa do banco de dados para a aplicação SIMEC,
+//            agora com gerenciamento de status de alerta por usuário.
+
+// --- Configuração do Cliente Prisma ---
+generator client {
+  provider = "prisma-client-js"
+}
+
+// --- Configuração da Fonte de Dados ---
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ===============================================
+//         MODELOS PRINCIPAIS
+// ===============================================
+
+model Unidade {
+  id                String          @id @default(uuid())
+  nomeSistema       String          @unique
+  nomeFantasia      String?
+  cnpj              String?         @unique
+  logradouro        String?
+  numero            String?
+  complemento       String?
+  bairro            String?
+  cidade            String?
+  estado            String?
+  cep               String?
+  equipamentos      Equipamento[]
+  contratosCobertos Contrato[]      @relation("ContratosUnidadesCobertas")
+  segurosCobertos   Seguro[]        @relation("SegurosUnidadesCobertas")
+  anexos            Anexo[]
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  @@map("unidades")
+}
+
+model Usuario {
+  id                  String               @id @default(uuid())
+  username            String               @unique
+  nome                String
+  senha               String
+  role                Role                 @default(user)
+  logsDeAuditoria     LogAuditoria[]
+  notasDeAndamento    NotaAndamento[]
+  alertasLidos        AlertaLidoPorUsuario[] // Referência para os alertas que este usuário leu
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  @@map("usuarios")
+}
+
+model Equipamento {
+  id                String            @id @default(uuid())
+  tag               String            @unique
+  modelo            String
+  tipo              String?
+  setor             String?
+  fabricante        String?
+  anoFabricacao     String?           @map("ano_fabricacao")
+  dataInstalacao    DateTime?         @map("data_instalacao")
+  status            StatusEquipamento @default(Operante)
+  numeroPatrimonio  String?           @unique @map("numero_patrimonio")
+  registroAnvisa    String?           @map("registro_anvisa")
+  observacoes       String?           @db.Text
+  unidadeId         String
+  unidade           Unidade           @relation(fields: [unidadeId], references: [id], onDelete: Cascade)
+  contratosCobertos Contrato[]        @relation("ContratosEquipamentosCobertos")
+  acessorios        Acessorio[]
+  manutencoes       Manutencao[]
+  seguros           Seguro[]
+  anexos            Anexo[]
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  @@map("equipamentos")
+}
+
+model Contrato {
+  id                   String          @id @default(uuid())
+  numeroContrato       String          @unique
+  categoria            String?
+  fornecedor           String?
+  dataInicio           DateTime
+  dataFim              DateTime
+  status               StatusContrato  @default(Ativo)
+  unidadesCobertas     Unidade[]       @relation("ContratosUnidadesCobertas")
+  equipamentosCobertos Equipamento[]   @relation("ContratosEquipamentosCobertos")
+  anexos               Anexo[]
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+  @@map("contratos")
+}
+
+model Manutencao {
+  id                          String             @id @default(uuid())
+  numeroOS                    String             @unique @map("numero_os")
+  tipo                        TipoManutencao     @default(Preventiva) @map("tipo_manutencao")
+  status                      StatusManutencao   @default(Agendada)
+  descricaoProblemaServico    String             @map("descricao_problema_servico")
+  tecnicoResponsavel          String?            @map("tecnico_responsavel")
+  numeroChamado               String?            @map("numero_chamado")
+  dataHoraAgendamentoInicio   DateTime           @map("data_hora_agendamento_inicio")
+  dataHoraAgendamentoFim      DateTime?          @map("data_hora_agendamento_fim")
+  dataInicioReal              DateTime?          @map("data_inicio_real")
+  dataFimReal                 DateTime?          @map("data_fim_real")
+  dataConclusao               DateTime?          @map("data_conclusao")
+  custoTotal                  Float?             @map("custo_total")
+  equipamento                 Equipamento        @relation(fields: [equipamentoId], references: [id], onDelete: Cascade)
+  equipamentoId               String             @map("equipamento_id")
+  anexos                      Anexo[]
+  notasAndamento              NotaAndamento[]
+  createdAt                   DateTime           @default(now())
+  updatedAt                   DateTime           @updatedAt
+  @@map("manutencoes")
+}
+
+model Acessorio {
+  id            String        @id @default(uuid())
+  nome          String
+  numeroSerie   String?       @unique @map("numero_serie")
+  descricao     String?
+  equipamento   Equipamento   @relation(fields: [equipamentoId], references: [id], onDelete: Cascade)
+  equipamentoId String        @map("equipamento_id")
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  @@map("acessorios")
+}
+
+model Seguro {
+  id            String          @id @default(uuid())
+  apoliceNumero String          @unique @map("apolice_numero")
+  seguradora    String
+  dataInicio    DateTime        @map("data_inicio")
+  dataFim       DateTime        @map("data_fim")
+  status        StatusSeguro    @default(Ativo) // Mantém o status base para o Seguro
+  cobertura     String?         @db.Text
+  
+  equipamento   Equipamento?    @relation(fields: [equipamentoId], references: [id], onDelete: SetNull)
+  equipamentoId String?         @map("equipamento_id")
+  
+  unidade       Unidade?        @relation("SegurosUnidadesCobertas", fields: [unidadeId], references: [id], onDelete: SetNull)
+  unidadeId     String?         @map("unidade_id")
+
+  anexos        Anexo[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  @@map("seguros")
+}
+
+// ===============================================
+//         MODELOS DE SUPORTE
+// ===============================================
+
+model Alerta {
+  id            String               @id // ID do alerta deve ser mantido
+  titulo        String
+  subtitulo     String?
+  data          DateTime
+  prioridade    Prioridade
+  tipo          String
+  link          String?
+  emailEnviado  Boolean              @default(false) // Indica se email JÁ foi enviado
+  
+  lidoPorUsuarios AlertaLidoPorUsuario[] // Relação com a nova tabela pivô
+
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+  @@map("alertas")
+}
+
+// NOVO MODELO: Para rastrear o status de "lido" por cada usuário
+model AlertaLidoPorUsuario {
+  alertaId    String
+  usuarioId   String
+  visto       Boolean   @default(true) // True se o usuário marcou como visto/dispensado
+  dataVisto   DateTime? @default(now())
+
+  alerta      Alerta    @relation(fields: [alertaId], references: [id], onDelete: Cascade)
+  usuario     Usuario   @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@id([alertaId, usuarioId]) // Chave composta: garante unicidade para cada par alerta-usuário
+  @@map("alertas_lidos_por_usuario")
+}
+
+model LogAuditoria {
+  id         String     @id @default(uuid())
+  acao       String
+  entidade   String
+  entidadeId String     @map("entidade_id")
+  detalhes   String     @db.Text
+  timestamp  DateTime   @default(now())
+  autor      Usuario    @relation(fields: [autorId], references: [id], onDelete: Cascade)
+  autorId    String     @map("autor_id")
+  @@map("log_auditoria")
+}
+
+model Anexo {
+  id            String      @id @default(uuid())
+  nomeOriginal  String      @map("nome_original")
+  path          String      @unique
+  tipoMime      String      @map("tipo_mime")
+  unidade       Unidade?    @relation(fields: [unidadeId], references: [id], onDelete: Cascade)
+  unidadeId     String?     @map("unidade_id")
+  equipamento   Equipamento? @relation(fields: [equipamentoId], references: [id], onDelete: Cascade)
+  equipamentoId String?     @map("equipamento_id")
+  manutencao    Manutencao? @relation(fields: [manutencaoId], references: [id], onDelete: Cascade)
+  manutencaoId  String?     @map("manutencao_id")
+  seguro        Seguro?     @relation(fields: [seguroId], references: [id], onDelete: Cascade)
+  seguroId      String?     @map("seguro_id")
+  contrato      Contrato?   @relation(fields: [contratoId], references: [id], onDelete: Cascade)
+  contratoId    String?     @map("contrato_id")
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  @@map("anexos")
+}
+
+model NotaAndamento {
+  id           String      @id @default(uuid())
+  nota         String      @db.Text
+  data         DateTime    @default(now())
+  origem       String      @default("manual")
+  manutencao   Manutencao  @relation(fields: [manutencaoId], references: [id], onDelete: Cascade)
+  manutencaoId String      @map("manutencao_id")
+  autor        Usuario?    @relation(fields: [autorId], references: [id], onDelete: Cascade)
+  autorId      String?     @map("autor_id")
+  @@map("notas_andamento")
+}
+
+// --- MODELOS DE NOTIFICAÇÃO (ATUALIZADOS) ---
+
+model EmailNotificacao {
+  id                        String             @id @default(uuid())
+  nome                      String?
+  email                     String             @unique
+  ativo                     Boolean            @default(true)
+  diasAntecedencia          Int                @default(30)
+  recebeAlertasContrato     Boolean            @default(true)
+  recebeAlertasManutencao   Boolean            @default(false)
+  recebeAlertasSeguro       Boolean            @default(false)
+  notificacoesEnviadas      NotificacaoEnviada[]
+  createdAt                 DateTime           @default(now())
+  updatedAt                 DateTime           @updatedAt
+  @@map("emails_notificacao")
+}
+
+model NotificacaoEnviada {
+  id                   String           @id @default(uuid())
+  entidade             String
+  entidadeId           String
+  dataEnvio            DateTime         @default(now())
+  emailNotificacaoId   String
+  emailNotificacao     EmailNotificacao @relation(fields: [emailNotificacaoId], references: [id], onDelete: Cascade)
+  @@unique([entidade, entidadeId, emailNotificacaoId])
+  @@map("notificacoes_enviadas")
+}
+
+// ===============================================
+//         ENUMS (TIPOS FIXOS)
+// ===============================================
+
+enum Role {
+  admin
+  user
+}
+
+enum StatusEquipamento {
+  Operante
+  Inoperante
+  UsoLimitado
+  EmManutencao
+}
+
+enum StatusContrato {
+  Ativo
+  Expirado
+  Cancelado
+}
+
+enum TipoManutencao {
+  Preventiva
+  Corretiva
+  Calibracao
+  Inspecao
+}
+
+enum StatusManutencao {
+  Agendada
+  EmAndamento
+  Concluida
+  Cancelada
+  Pendente
+  AguardandoConfirmacao
+}
+
+// NOVO ENUM: Status do Seguro
+enum StatusSeguro {
+  Ativo
+  Expirado
+  Cancelado
+  Vigente // Mantido para possível uso, embora 'Ativo' já cubra boa parte
+}
+
+
+enum Prioridade {
+  Baixa
+  Media
+  Alta
+}
