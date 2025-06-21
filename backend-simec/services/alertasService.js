@@ -1,7 +1,7 @@
 // Ficheiro: simec/backend-simec/services/alertasService.js
-// Versão: 4.0 (Sênior - LÓGICA DE ALERTAS UNIFICADA E SEM DUPLICIDADE)
+// Versão: 4.1 (Sênior - CORRIGIDO - Status do equipamento sincronizado com início da manutenção)
 // Descrição: Serviço de alertas com a lógica de finalização de manutenção
-//            centralizada em um único ponto para evitar alertas duplicados.
+//            centralizada e agora com a atualização correta do status do equipamento.
 
 import prisma from './prismaService.js';
 import { enviarEmail } from './emailService.js';
@@ -15,13 +15,38 @@ import { ptBR } from 'date-fns/locale';
 export async function atualizarStatusManutencoes() {
   const agora = new Date();
 
-  // 1. Inicia manutenções 'Agendada' -> 'EmAndamento'
-  const resInicio = await prisma.manutencao.updateMany({
-    where: { status: 'Agendada', dataHoraAgendamentoInicio: { lte: agora } },
-    data: { status: 'EmAndamento' },
+  // 1. Inicia manutenções 'Agendada' -> 'EmAndamento' E ATUALIZA O STATUS DO EQUIPAMENTO
+  // Passo 1.1: Encontrar as manutenções que devem ser iniciadas.
+  const manutsParaIniciar = await prisma.manutencao.findMany({
+    where: {
+      status: 'Agendada',
+      dataHoraAgendamentoInicio: { lte: agora }
+    },
+    select: { id: true, equipamentoId: true } // Seleciona os IDs necessários para a transação.
   });
-  if (resInicio.count > 0) {
-    console.log(`[STATUS AUTO] ${resInicio.count} manutenção(ões) iniciada(s).`);
+
+  if (manutsParaIniciar.length > 0) {
+    const idsManutencao = manutsParaIniciar.map(m => m.id);
+    const idsEquipamento = manutsParaIniciar.map(m => m.equipamentoId);
+
+    // Passo 1.2: Executa as atualizações em lote dentro de uma transação para garantir a atomicidade.
+    try {
+      const [updateEquipamentos, updateManutencoes] = await prisma.$transaction([
+        // Atualiza o status do equipamento para 'EmManutencao'.
+        prisma.equipamento.updateMany({
+          where: { id: { in: idsEquipamento } },
+          data: { status: 'EmManutencao' }
+        }),
+        // Atualiza o status da manutenção para 'EmAndamento'.
+        prisma.manutencao.updateMany({
+          where: { id: { in: idsManutencao } },
+          data: { status: 'EmAndamento' }
+        })
+      ]);
+      console.log(`[STATUS AUTO] ${updateManutencoes.count} manutenção(ões) iniciada(s) e ${updateEquipamentos.count} equipamento(s) atualizado(s) para 'EmManutencao'.`);
+    } catch (err) {
+      console.error('[STATUS AUTO] Erro na transação de início de manutenções:', err);
+    }
   }
 
   // 2. Move 'EmAndamento' -> 'AguardandoConfirmacao' e gera o alerta de confirmação
