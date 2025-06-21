@@ -7,7 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import logoSimec from '../assets/images/logo-simec.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faUser, faLock } from '@fortawesome/free-solid-svg-icons';
-import '../styles/pages/Login.css';
+import '@/styles/pages/login.css';
 
 function LoginPage() {
   const [username, setUsername] = useState('');
