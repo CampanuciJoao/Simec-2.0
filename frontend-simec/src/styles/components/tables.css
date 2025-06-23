@@ -1,7 +1,7 @@
 /*
    Ficheiro: src/styles/components/tables.css
    Descrição: Estilo de UI Sênior, com alinhamento de grade perfeito e classes utilitárias.
-   Versão: 4.1 (Corrigido - Fundo de linha responsivo restaurado)
+   Versão: 4.2 (Corrigido Definitivamente - Cores de linha para Desktop e Mobile)
 */
 
 /* ==========================================================================
@@ -12,7 +12,7 @@
 .text-right { text-align: right !important; }
 
 /* ==========================================================================
-   2. ESTILO DA TABELA GERAL (DESKTOP)
+   2. ESTILO DA TABELA GERAL
    ========================================================================== */
 .table-responsive-wrapper {
   width: 100%;
@@ -36,7 +36,6 @@
 .data-table th:first-child, .data-table td:first-child { padding-left: 24px; }
 .data-table th:last-child, .data-table td:last-child { padding-right: 24px; }
 .data-table tbody tr:last-child td { border-bottom: none; }
-.data-table tbody tr:not([class*="status-row-"]):hover { background-color: var(--cor-fundo-pagina-light); }
 
 .data-table thead th {
   background-color: var(--cor-sidebar-bg-light);
@@ -48,12 +47,6 @@
   white-space: nowrap;
 }
 
-.data-table thead th.sortable-header { cursor: pointer; transition: background-color 0.2s ease; }
-.data-table thead th.sortable-header:hover { background-color: #2c3e50; }
-.data-table thead th .sort-arrow { margin-left: 8px; color: var(--cor-sidebar-texto-light); opacity: 0.8; }
-.data-table thead th .sort-arrow.fa-sort-up,
-.data-table thead th .sort-arrow.fa-sort-down { color: #ffffff; opacity: 1; }
-
 .actions-cell {
   display: flex;
   justify-content: center;
@@ -62,7 +55,7 @@
 }
 
 /* ==========================================================================
-   3. CABEÇALHO COM FILTROS E BOTÕES ACIMA DA TABELA
+   3. CABEÇALHO COM FILTROS E BOTÕES
    ========================================================================== */
 .table-header-actions {
   display: flex;
@@ -79,8 +72,11 @@
 }
 
 /* ==========================================================================
-   4. DESTAQUE DE LINHA E STATUS (LÓGICA UNIFICADA)
+   4. DESTAQUE DE LINHA E STATUS (LÓGICA PARA DESKTOP)
    ========================================================================== */
+.data-table tbody tr:not([class*="status-row-"]):hover { 
+  background-color: var(--cor-fundo-pagina-light); 
+}
 .data-table tbody tr[class*="status-row-"] { 
   border-left: 5px solid transparent; 
 }
@@ -89,7 +85,7 @@
   filter: brightness(0.97); 
 }
 
-/* --- Cores de Fundo e Borda para cada Status --- */
+/* --- Cores de Fundo para DESKTOP --- */
 .status-row-ativo,
 .status-row-os-agendada { background-color: #f0fdf4; border-left-color: #22C55E; }
 
@@ -118,20 +114,16 @@ body.dark-mode .data-table tbody tr[class*="status-row-"] td { color: var(--cor-
 
 body.dark-mode .status-row-ativo,
 body.dark-mode .status-row-os-agendada { background-color: #1a2e2a; border-left-color: #22c55e; }
-
 body.dark-mode .status-row-vencendo-warning,
 body.dark-mode .status-row-os-emandamento { background-color: #3b2f0a; border-left-color: #f59e0b; }
-
 body.dark-mode .status-row-vencendo-danger,
 body.dark-mode .status-row-os-cancelada { background-color: #3c1e1f; border-left-color: #ef4444; }
-
 body.dark-mode .status-row-os-concluida { background-color: #1e293b; border-left-color: #94a3b8; }
 
 /* ==========================================================================
-   6. RESPONSIVIDADE (MOBILE)
+   6. RESPONSIVIDADE (MOBILE) - TODAS AS REGRAS A PARTIR DAQUI
    ========================================================================== */
 @media (max-width: 768px) {
-  /* --- Ajuste no Header da Tabela --- */
   .table-header-actions {
     flex-direction: column;
     align-items: stretch;
@@ -155,10 +147,10 @@ body.dark-mode .status-row-os-concluida { background-color: #1e293b; border-left
     border-radius: 8px;
     margin-bottom: 15px;
     box-shadow: var(--sombra-card-light);
-    /* ** A CORREÇÃO PRINCIPAL ESTÁ AQUI **
-       No mobile, a cor de fundo do TR é definida como a cor do card,
-       MAS as classes de status (status-row-*) vão sobrescrever esta regra
-       e aplicar o fundo colorido desejado. */
+    /* ** AQUI ESTÁ A LÓGICA CORRETA **
+       No mobile, a cor da borda esquerda continuará vindo das classes de status,
+       mas o fundo do card será SEMPRE o padrão. Isso garante contraste e legibilidade.
+       Se quisermos o fundo colorido, podemos adicionar aqui, mas assim fica mais limpo. */
     background-color: var(--cor-fundo-card-light);
   }
 
