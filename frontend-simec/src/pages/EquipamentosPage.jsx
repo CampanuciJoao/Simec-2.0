@@ -110,35 +110,36 @@ function EquipamentosPage() {
                   <th className="col-text-left sortable-header" onClick={() => controles.requestSort('modelo')}>Modelo <FontAwesomeIcon icon={controles.sortConfig.key === 'modelo' ? (controles.sortConfig.direction === 'ascending' ? faSortUp : faSortDown) : faSort} className={controles.sortConfig.key === 'modelo' ? 'sort-arrow active' : 'sort-arrow'}/></th><th>Nº Série (Tag)</th><th>Tipo</th><th>Unidade</th><th>Fabricante</th><th>Data Inst.</th><th>Status</th><th className="col-text-right">Ações</th>
                 </tr>
               </thead>
-              <tbody>
-                {loading ? (
-                   <tr><td colSpan="8" className="table-message"><FontAwesomeIcon icon={faSpinner} spin /> Carregando dados...</td></tr>
-                ) : equipamentos.length === 0 ? (
-                  <tr><td colSpan="8" className="table-message">Nenhum equipamento encontrado.</td></tr>
-                ) : (
-                  equipamentos.map((equip) => (
-                    <tr key={equip.id} className={getRowHighlightClass(equip.status)}>
-                       <td className="col-text-left">{equip.modelo}</td>
-                       <td>{equip.tag}</td>
-                       <td>{equip.tipo}</td>
-                       <td>{equip.unidade?.nomeSistema || 'N/A'}</td>
-                       <td>{equip.fabricante}</td>
-                       <td>{formatarDataParaBR(equip.dataInstalacao)}</td>
-                       <td>
-                          <StatusSelector 
-                              equipamento={equip} 
-                              onSuccessUpdate={atualizarStatusLocalmente} 
-                          />
-                       </td>
-                       <td className="actions-cell col-text-right">
-                          <Link to={`/equipamentos/detalhes/${equip.id}`} className="btn-action view" title="Ver Detalhes"><FontAwesomeIcon icon={faEye} /></Link>
-                          <button onClick={() => navigate(`/cadastros/equipamentos/editar/${equip.id}`)} className="btn-action edit" title="Editar"><FontAwesomeIcon icon={faEdit} /></button>
-                          {user?.role === 'admin' && <button onClick={() => abrirModalExclusao(equip)} className="btn-action delete" title="Excluir"><FontAwesomeIcon icon={faTrashAlt} /></button>}
-                       </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
+      <tbody>
+        {loading ? (
+          <tr><td colSpan="8" className="table-message"><FontAwesomeIcon icon={faSpinner} spin /> Carregando dados...</td></tr>
+        ) : equipamentos.length === 0 ? (
+          <tr><td colSpan="8" className="table-message">Nenhum equipamento encontrado.</td></tr>
+        ) : (
+          equipamentos.map((equip) => (
+            <tr key={equip.id} className={getRowHighlightClass(equip.status)}>
+             {/* Adicione os data-label correspondentes a cada <th> */}
+              <td data-label="Modelo" className="col-text-left">{equip.modelo}</td>
+              <td data-label="Nº Série (Tag)">{equip.tag}</td>
+              <td data-label="Tipo">{equip.tipo}</td>
+              <td data-label="Unidade">{equip.unidade?.nomeSistema || 'N/A'}</td>
+              <td data-label="Fabricante">{equip.fabricante}</td>
+              <td data-label="Data Inst.">{formatarDataParaBR(equip.dataInstalacao)}</td>
+              <td data-label="Status">
+            <StatusSelector 
+                equipamento={equip} 
+                onSuccessUpdate={atualizarStatusLocalmente} 
+            />
+            </td>
+             <td data-label="Ações" className="actions-cell col-text-right">
+              <Link to={`/equipamentos/detalhes/${equip.id}`} className="btn-action view" title="Ver Detalhes"><FontAwesomeIcon icon={faEye} /></Link>
+              <button onClick={() => navigate(`/cadastros/equipamentos/editar/${equip.id}`)} className="btn-action edit" title="Editar"><FontAwesomeIcon icon={faEdit} /></button>
+              {user?.role === 'admin' && <button onClick={() => abrirModalExclusao(equip)} className="btn-action delete" title="Excluir"><FontAwesomeIcon icon={faTrashAlt} /></button>}
+            </td>
+          </tr>
+          ))
+         )}
+      </tbody>
             </table>
           </div>
         </section>

@@ -139,3 +139,21 @@ body.dark-mode .sidebar {
     display: block;
   }
 }
+
+/* --- Ajustes para Rolagem na Sidebar --- */
+.sidebar {
+  /* ... outras propriedades ... */
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.sidebar .logo-area {
+  flex-shrink: 0; /* Impede que o logo encolha */
+}
+
+.sidebar nav {
+  flex-grow: 1; /* Faz a navegação ocupar o espaço restante */
+  overflow-y: auto; /* PERMITE A ROLAGEM VERTICAL APENAS SE NECESSÁRIO */
+  padding-bottom: 20px; /* Espaço no final da lista */
+}

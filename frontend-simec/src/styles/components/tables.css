@@ -275,3 +275,22 @@ body.dark-mode .data-table tbody tr[class*="status-row-"] td {
     text-align: center; /* Centraliza os botões */
   }
 }
+
+/* --- Media Query para Cabeçalho de Tabela Responsivo --- */
+@media (max-width: 768px) {
+  .table-header-actions {
+    flex-direction: column; /* Empilha os itens verticalmente */
+    align-items: stretch;   /* Faz os itens ocuparem a largura total */
+    gap: 15px;              /* Adiciona um espaço entre os itens empilhados */
+  }
+
+  .table-header-actions .search-input-table {
+    min-width: 0; /* Remove a largura mínima no mobile */
+    width: 100%;  /* Ocupa toda a largura disponível */
+  }
+
+  .table-header-actions .btn {
+    width: 100%; /* O botão também ocupa a largura total */
+    margin-left: 0;
+  }
+}

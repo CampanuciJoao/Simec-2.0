@@ -117,28 +117,30 @@ function EmailsNotificacaoPage() {
                 <th className="text-center">Ações</th>
               </tr>
             </thead>
-            <tbody>
-              {loading ? (
+        <tbody>
+             {loading ? (
                 <tr><td colSpan="7" className="text-center"><FontAwesomeIcon icon={faSpinner} spin /> Carregando...</td></tr>
               ) : emails.length > 0 ? (
-                emails.map(email => (
-                  <tr key={email.id}>
-                    <td className="text-left">{email.nome || '-'}</td>
-                    <td className="text-left">{email.email}</td>
-                    <td className="text-center">{email.diasAntecedencia}</td>
-                    <td className="text-center"><IconeStatus ativo={email.recebeAlertasContrato} /></td>
-                    <td className="text-center"><IconeStatus ativo={email.recebeAlertasManutencao} /></td>
-                    <td className="text-center"><IconeStatus ativo={email.recebeAlertasSeguro} /></td>
-                    <td className="actions-cell text-center">
-                      <button onClick={() => handleOpenModal(email)} className="btn-action edit" title="Editar Configurações"><FontAwesomeIcon icon={faEdit}/></button>
-                      <button onClick={() => handleDelete(email.id, email.email)} className="btn-action delete" title="Remover E-mail"><FontAwesomeIcon icon={faTrashAlt}/></button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr><td colSpan="7" className="text-center">Nenhum e-mail cadastrado.</td></tr>
-              )}
-            </tbody>
+              emails.map(email => (
+              <tr key={email.id}>
+              {/* Adicione os data-label correspondentes a cada <th> */}
+              <td data-label="Nome" className="text-left">{email.nome || '-'}</td>
+              <td data-label="E-mail" className="text-left">{email.email}</td>
+              <td data-label="Dias Antec." className="text-center">{email.diasAntecedencia}</td>
+              <td data-label="Contratos" className="text-center"><IconeStatus ativo={email.recebeAlertasContrato} /></td>
+              <td data-label="Manutenções" className="text-center"><IconeStatus ativo={email.recebeAlertasManutencao} /></td>
+              <td data-label="Seguros" className="text-center"><IconeStatus ativo={email.recebeAlertasSeguro} /></td>
+              <td data-label="Ações" className="actions-cell text-center">
+                <button onClick={() => handleOpenModal(email)} className="btn-action edit" title="Editar Configurações"><FontAwesomeIcon icon={faEdit}/></button>
+                <button onClick={() => handleDelete(email.id, email.email)} className="btn-action delete" title="Remover E-mail"><FontAwesomeIcon icon={faTrashAlt}/></button>
+            </td>
+        </tr>
+      ))
+    ) : (
+     <tr><td colSpan="7" className="text-center">Nenhum e-mail cadastrado.</td></tr>
+      )}
+        </tbody>
+
           </table>
         </div>
       </section>
