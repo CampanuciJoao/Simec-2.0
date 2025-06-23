@@ -1,11 +1,11 @@
 /*
    Ficheiro: src/styles/components/tables.css
    Descrição: Estilo de UI Sênior, com alinhamento de grade perfeito e classes utilitárias.
-   Versão: 4.0 (Refatorado para Responsividade)
+   Versão: 4.1 (Corrigido - Fundo de linha responsivo restaurado)
 */
 
 /* ==========================================================================
-   1. CLASSES DE ALINHAMENTO UTILITÁRIAS (PARA USO NO <th> E <td>)
+   1. CLASSES DE ALINHAMENTO UTILITÁRIAS
    ========================================================================== */
 .text-left { text-align: left !important; }
 .text-center { text-align: center !important; }
@@ -38,7 +38,6 @@
 .data-table tbody tr:last-child td { border-bottom: none; }
 .data-table tbody tr:not([class*="status-row-"]):hover { background-color: var(--cor-fundo-pagina-light); }
 
-/* --- Cabeçalho da Tabela --- */
 .data-table thead th {
   background-color: var(--cor-sidebar-bg-light);
   color: var(--cor-sidebar-texto-hover-light);
@@ -46,7 +45,7 @@
   text-transform: uppercase;
   font-size: 0.8em;
   letter-spacing: 0.5px;
-  white-space: nowrap; /* Evita que o cabeçalho quebre linha */
+  white-space: nowrap;
 }
 
 .data-table thead th.sortable-header { cursor: pointer; transition: background-color 0.2s ease; }
@@ -55,7 +54,6 @@
 .data-table thead th .sort-arrow.fa-sort-up,
 .data-table thead th .sort-arrow.fa-sort-down { color: #ffffff; opacity: 1; }
 
-/* --- Célula de Ações (Botões) --- */
 .actions-cell {
   display: flex;
   justify-content: center;
@@ -81,25 +79,32 @@
 }
 
 /* ==========================================================================
-   4. ESTILOS DE DESTAQUE DE LINHA E STATUS (BASEADOS EM CLASSES)
+   4. DESTAQUE DE LINHA E STATUS (LÓGICA UNIFICADA)
    ========================================================================== */
+.data-table tbody tr[class*="status-row-"] { 
+  border-left: 5px solid transparent; 
+}
+.data-table tbody tr[class*="status-row-"]:hover { 
+  background-color: inherit !important; 
+  filter: brightness(0.97); 
+}
 
-/* --- Linhas Coloridas para Status --- */
-.data-table tbody tr[class*="status-row-"] { border-left: 5px solid transparent; }
-.data-table tbody tr[class*="status-row-"]:hover { background-color: inherit !important; filter: brightness(0.97); }
+/* --- Cores de Fundo e Borda para cada Status --- */
+.status-row-ativo,
+.status-row-os-agendada { background-color: #f0fdf4; border-left-color: #22C55E; }
 
-.data-table tbody tr.status-row-ativo,
-.data-table tbody tr.status-row-os-agendada { background-color: #f0fdf4; border-left-color: #22C55E; }
+.status-row-vencendo-warning,
+.status-row-os-emandamento { background-color: #fefce8; border-left-color: #F59E0B; }
 
-.data-table tbody tr.status-row-vencendo-warning,
-.data-table tbody tr.status-row-os-emandamento { background-color: #fefce8; border-left-color: #F59E0B; }
+.status-row-vencendo-danger,
+.status-row-os-cancelada { background-color: #fef2f2; border-left-color: #EF4444; }
 
-.data-table tbody tr.status-row-vencendo-danger,
-.data-table tbody tr.status-row-os-cancelada { background-color: #fef2f2; border-left-color: #EF4444; }
+.status-row-os-concluida { background-color: #f1f5f9; border-left-color: #64748b; }
 
-.data-table tbody tr.status-row-os-concluida { background-color: #f1f5f9; border-left-color: #64748b; }
-
-.data-table tbody tr[class*="status-row-"] td { color: var(--cor-texto-principal-light); font-weight: 500; }
+.data-table tbody tr[class*="status-row-"] td { 
+  color: var(--cor-texto-principal-light); 
+  font-weight: 500; 
+}
 
 /* ==========================================================================
    5. DARK MODE (PARA DESKTOP)
@@ -111,13 +116,16 @@ body.dark-mode .data-table thead th { background-color: var(--cor-sidebar-bg-dar
 body.dark-mode .table-header-actions { border-bottom-color: var(--cor-borda-dark); }
 body.dark-mode .data-table tbody tr[class*="status-row-"] td { color: var(--cor-texto-principal-dark); }
 
-body.dark-mode .data-table tbody tr.status-row-ativo,
-body.dark-mode .data-table tbody tr.status-row-os-agendada { background-color: #1a2e2a; border-left-color: #22c55e; }
-body.dark-mode .data-table tbody tr.status-row-vencendo-warning,
-body.dark-mode .data-table tbody tr.status-row-os-emandamento { background-color: #3b2f0a; border-left-color: #f59e0b; }
-body.dark-mode .data-table tbody tr.status-row-vencendo-danger,
-body.dark-mode .data-table tbody tr.status-row-os-cancelada { background-color: #3c1e1f; border-left-color: #ef4444; }
-body.dark-mode .data-table tbody tr.status-row-os-concluida { background-color: #1e293b; border-left-color: #94a3b8;}
+body.dark-mode .status-row-ativo,
+body.dark-mode .status-row-os-agendada { background-color: #1a2e2a; border-left-color: #22c55e; }
+
+body.dark-mode .status-row-vencendo-warning,
+body.dark-mode .status-row-os-emandamento { background-color: #3b2f0a; border-left-color: #f59e0b; }
+
+body.dark-mode .status-row-vencendo-danger,
+body.dark-mode .status-row-os-cancelada { background-color: #3c1e1f; border-left-color: #ef4444; }
+
+body.dark-mode .status-row-os-concluida { background-color: #1e293b; border-left-color: #94a3b8; }
 
 /* ==========================================================================
    6. RESPONSIVIDADE (MOBILE)
@@ -128,7 +136,7 @@ body.dark-mode .data-table tbody tr.status-row-os-concluida { background-color: 
     flex-direction: column;
     align-items: stretch;
     gap: 15px;
-    padding: 16px; /* Padding uniforme no mobile */
+    padding: 16px;
   }
   .table-header-actions .search-input-table,
   .table-header-actions .btn {
@@ -138,40 +146,31 @@ body.dark-mode .data-table tbody tr.status-row-os-concluida { background-color: 
 
   /* --- Transformação da Tabela em Lista de Cards --- */
   .data-table thead {
-    display: none; /* Esconde o cabeçalho tradicional */
+    display: none;
   }
 
   .data-table tr {
     display: block;
     border: 1px solid var(--cor-borda-light);
-    border-left: 5px solid var(--cor-primaria-light); /* Borda de destaque padrão */
     border-radius: 8px;
     margin-bottom: 15px;
     box-shadow: var(--sombra-card-light);
+    /* ** A CORREÇÃO PRINCIPAL ESTÁ AQUI **
+       No mobile, a cor de fundo do TR é definida como a cor do card,
+       MAS as classes de status (status-row-*) vão sobrescrever esta regra
+       e aplicar o fundo colorido desejado. */
     background-color: var(--cor-fundo-card-light);
   }
-  
-  /* Mantém as cores de status na borda esquerda */
-  .data-table tbody tr.status-row-ativo,
-  .data-table tbody tr.status-row-os-agendada { border-left-color: #22C55E; background-color: var(--cor-fundo-card-light); }
-  
-  .data-table tbody tr.status-row-vencendo-warning,
-  .data-table tbody tr.status-row-os-emandamento { border-left-color: #F59E0B; background-color: var(--cor-fundo-card-light); }
-  
-  .data-table tbody tr.status-row-vencendo-danger,
-  .data-table tbody tr.status-row-os-cancelada { border-left-color: #EF4444; background-color: var(--cor-fundo-card-light); }
-  
-  .data-table tbody tr.status-row-os-concluida { border-left-color: #64748b; background-color: var(--cor-fundo-card-light); }
-  
 
   .data-table td {
-    display: flex; /* Habilita flexbox para alinhar rótulo e valor */
-    justify-content: space-between; /* Coloca o rótulo à esquerda e valor à direita */
+    display: flex;
+    justify-content: space-between;
     align-items: center;
     padding: 12px 15px;
     border-bottom: 1px dotted var(--cor-borda-light);
-    text-align: right; /* Alinha o texto do valor à direita */
-    word-break: break-word; /* Força a quebra de conteúdo longo (e-mails, etc) */
+    text-align: right;
+    word-break: break-word;
+    min-height: 2.5em;
   }
 
   .data-table td:last-child {
@@ -179,23 +178,21 @@ body.dark-mode .data-table tbody tr.status-row-os-concluida { background-color: 
   }
 
   .data-table td::before {
-    content: attr(data-label); /* Cria o rótulo a partir do atributo data-label */
+    content: attr(data-label);
     font-weight: 600;
     color: var(--cor-texto-principal-light);
     text-align: left;
-    margin-right: 10px; /* Espaço entre o rótulo e o valor */
+    margin-right: 10px;
   }
   
-  /* Ajusta a célula de ações para ficar mais bonita no formato de card */
   .data-table .actions-cell {
-    justify-content: flex-end; /* Alinha os botões à direita */
-    padding: 12px 15px;
+    justify-content: flex-end;
   }
   .data-table .actions-cell::before {
-      content: "Ações"; /* Garante que o rótulo apareça */
+      content: "Ações";
   }
 
-  /* --- Dark Mode para Mobile --- */
+  /* --- Dark Mode para Tabela Mobile --- */
   body.dark-mode .data-table tr {
     border-color: var(--cor-borda-dark);
     background-color: var(--cor-fundo-card-dark);
