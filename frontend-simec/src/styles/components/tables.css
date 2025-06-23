@@ -284,6 +284,19 @@ body.dark-mode .data-table tbody tr[class*="status-row-"] td {
     gap: 15px;              /* Adiciona um espaço entre os itens empilhados */
   }
 
+  .data-table td {
+    display: block;
+    text-align: right;
+    position: relative;
+    padding-left: 50%;
+    border-bottom: 1px dotted var(--cor-borda-light);
+    
+    /* --- LINHAS ADICIONADAS PARA A CORREÇÃO --- */
+    word-break: break-word; /* Força a quebra de palavras/conteúdo longo */
+    white-space: normal;    /* Garante que o texto possa quebrar em múltiplas linhas */
+    /* ------------------------------------------- */
+  }
+
   .table-header-actions .search-input-table {
     min-width: 0; /* Remove a largura mínima no mobile */
     width: 100%;  /* Ocupa toda a largura disponível */
