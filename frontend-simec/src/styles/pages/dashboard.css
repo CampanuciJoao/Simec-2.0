@@ -161,3 +161,25 @@ body.dark-mode .charts-section .chart-container-dashboard h2 {
 body.dark-mode .chart-separator {
     border-top-color: var(--cor-borda-dark);
 }
+
+/* --- Responsividade do Dashboard --- */
+@media (max-width: 1200px) {
+  .summary-cards {
+    /* Permite que os cards quebrem em duas linhas */
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 992px) {
+  .detailed-sections {
+    /* Empilha a seção de alertas e a de gráficos */
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 768px) {
+  .summary-cards {
+    /* Empilha os cards de resumo */
+    flex-direction: column;
+  }
+}

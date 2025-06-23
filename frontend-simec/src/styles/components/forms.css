@@ -223,7 +223,7 @@ body.dark-mode .form-elegante h4 {
   grid-template-columns: repeat(3, 1fr);
 }
 
-/* Responsividade para a grade de formulário */
+/* --- Responsividade para a grade de formulário --- */
 @media (max-width: 992px) {
   .form-elegante .info-grid.grid-cols-3 {
     grid-template-columns: repeat(2, 1fr);
@@ -233,6 +233,6 @@ body.dark-mode .form-elegante h4 {
 @media (max-width: 768px) {
   .form-elegante .info-grid.grid-cols-2,
   .form-elegante .info-grid.grid-cols-3 {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* Força uma única coluna */
   }
 }

@@ -124,27 +124,38 @@
 body.dark-mode .app-container { background-color: var(--cor-fundo-pagina-dark); }
 body.dark-mode .user-greeting { color: var(--cor-texto-secundario-dark); }
 /* ... (outras regras de dark mode) */
-
-.mobile-menu-btn {
+/* Botão de Menu para Mobile (escondido por padrão) */
+.mobile-menu-btn-wrapper {
   display: none;
 }
 
+/* Responsividade do Header e Conteúdo Principal */
 @media (max-width: 992px) {
-  /* No modo mobile, voltamos a usar space-between para o botão de menu aparecer à esquerda */
+  .main-content-wrapper {
+    /* Remove a margem esquerda para ocupar toda a tela */
+    margin-left: 0;
+  }
+  
   .header-actions {
+    /* No mobile, o header volta a usar space-between */
     justify-content: space-between;
-    padding: 0 15px;
-    height: 50px;
+    left: 15px;
+    right: 15px;
+    top: 10px;
   }
-  .mobile-menu-btn {
-    display: flex;
-  }
-}
 
-@media (max-width: 768px) {
-  /* No seu AppLayout.jsx, a saudação está dentro do grupo da direita, então esta regra pode não ser mais necessária */
-  /* .user-greeting { display: none; } */
-  .page-title-internal {
-    font-size: 1.3em;
+  /* Mostra o wrapper do botão de menu */
+  .mobile-menu-btn-wrapper {
+    display: block;
+  }
+  
+  /* Esconde a saudação para economizar espaço */
+  .header-right-actions .user-greeting {
+    display: none;
+  }
+
+  .main-content {
+    /* Aumenta o padding superior para não ficar embaixo do header */
+    padding-top: 70px; 
   }
 }

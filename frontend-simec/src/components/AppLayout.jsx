@@ -1,9 +1,8 @@
 // Ficheiro: frontend-simec/src/components/AppLayout.jsx
-// VERSÃO FINAL SÊNIOR - SEM O BOTÃO DE MENU DESNECESSÁRIO
+// VERSÃO FINAL MÓVEL - COM SIDEBAR E HEADER RESPONSIVOS
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, Outlet } from 'react-router-dom';
-// --- CORREÇÃO APLICADA AQUI: Usando o alias '@' ---
 import { useAlertas } from '@/contexts/AlertasContext';
 import { useAuth } from '@/contexts/AuthContext';
 import Sidebar from '@/components/Sidebar';
@@ -14,8 +13,8 @@ function AppLayout() {
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   
-  // O estado para o menu móvel não é mais necessário
-  // const [isSidebarMobileOpen, setSidebarMobileOpen] = useState(false); 
+  // NOVO: Estado para controlar a visibilidade da sidebar no mobile.
+  const [isSidebarMobileOpen, setSidebarMobileOpen] = useState(false); 
 
   const notificationRef = useRef(null);
   
@@ -32,9 +31,9 @@ function AppLayout() {
     localStorage.setItem('theme', theme);
   }, [theme]);
   
+  // Efeito para fechar a sidebar móvel quando a rota muda.
   useEffect(() => {
-    // A lógica para fechar o menu móvel não é mais necessária
-    // setSidebarMobileOpen(false);
+    setSidebarMobileOpen(false);
   }, [location.pathname]);
   
   useEffect(() => {
@@ -58,19 +57,26 @@ function AppLayout() {
   const alertasNaoVistos = alertas.filter(a => a.status === 'NaoVisto');
 
   return (
-    // A classe para o menu móvel foi removida do container principal
-    <div className="app-container">
+    // Adiciona a classe condicional ao container principal
+    <div className={`app-container ${isSidebarMobileOpen ? 'sidebar-mobile-open' : ''}`}>
       <Sidebar notificacoesCount={alertasNaoVistos.length} />
-      {/* O overlay do menu móvel não é mais necessário */}
+      {/* O overlay para fechar a sidebar ao clicar fora */}
+      {isSidebarMobileOpen && <div className="sidebar-overlay" onClick={() => setSidebarMobileOpen(false)}></div>}
 
       <div className="main-content-wrapper">
         <header className="header-actions">
           
-          {/* ========================================================================== */}
-          {/*  !!! O BOTÃO DE MENU E SEU WRAPPER FORAM REMOVIDOS DAQUI !!!
-          /* ========================================================================== */}
+          {/* Botão de Menu para Mobile */}
+          <div className="mobile-menu-btn-wrapper">
+            <button 
+              className="header-action-btn mobile-menu-btn" 
+              onClick={() => setSidebarMobileOpen(true)}
+              title="Abrir Menu"
+            >
+              <FontAwesomeIcon icon={faBars} />
+            </button>
+          </div>
 
-          {/* Container para todos os itens que devem ficar à direita */}
           <div className="header-right-actions">
             <span className="user-greeting">Olá, {user?.nome}</span>
             <button onClick={logout} className="header-action-btn" title="Sair">

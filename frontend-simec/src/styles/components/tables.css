@@ -215,3 +215,63 @@ body.dark-mode .data-table tbody tr[class*="status-row-"] td {
   text-align: center;
   vertical-align: middle; /* Opcional: Garante um alinhamento vertical perfeito */
 }
+
+/* --- Media Query para Tabelas Responsivas --- */
+@media (max-width: 768px) {
+  .data-table thead {
+    /* Esconde o cabeçalho tradicional no mobile */
+    display: none;
+  }
+
+  .data-table tr {
+    /* Cada linha vira um "card" */
+    display: block;
+    border: 1px solid var(--cor-borda-light);
+    border-radius: 8px;
+    margin-bottom: 15px;
+    box-shadow: var(--sombra-card-light);
+    background-color: var(--cor-fundo-card-light);
+  }
+  
+  body.dark-mode .data-table tr {
+      border-color: var(--cor-borda-dark);
+      background-color: var(--cor-fundo-card-dark);
+  }
+
+  .data-table td {
+    /* Células empilhadas verticalmente */
+    display: block;
+    text-align: right; /* Alinha o conteúdo à direita */
+    position: relative;
+    padding-left: 50%; /* Espaço à esquerda para o rótulo */
+    border-bottom: 1px dotted var(--cor-borda-light);
+  }
+  
+  body.dark-mode .data-table td {
+      border-bottom-color: var(--cor-borda-dark);
+  }
+
+  .data-table td:last-child {
+    border-bottom: none;
+  }
+
+  .data-table td::before {
+    /* Usa o atributo data-label para criar o rótulo */
+    content: attr(data-label);
+    position: absolute;
+    left: 15px;
+    font-weight: 600;
+    color: var(--cor-texto-principal-light);
+    text-align: left;
+  }
+  
+  body.dark-mode .data-table td::before {
+      color: var(--cor-texto-principal-dark);
+  }
+
+  /* Ajusta a célula de ações para ficar mais bonita */
+  .data-table .actions-cell {
+    padding-left: 15px;
+    text-align: center; /* Centraliza os botões */
+  }
+}
