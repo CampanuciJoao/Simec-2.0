@@ -77,30 +77,34 @@ app.use('/api/auditoria', auditoriaRoutes);
 app.use('/api/unidades', unidadesRoutes);
 app.use('/api/emails-notificacao', emailsNotificacaoRoutes);
 
+
 // --- 9. Rota Raiz e Tarefas Agendadas ---
 app.get('/', (req, res) => {
   res.send('API do SIMEC está a funcionar!');
 });
 
-const checkIntervalMs = 60 * 1000; // 1 minuto
-setInterval(() => {
+const executarTarefasDeFundo = async () => {
   console.log(`[${new Date().toLocaleTimeString('pt-BR')}] Executando tarefas de fundo...`);
   try {
-    atualizarStatusManutencoes();          // Lida com o estado operacional (início e fim de OS)
-    processarAlertasEEnviarNotificacoes(); // Lida com alertas de proximidade e vencimentos
+    // 1. PRIMEIRO, verificamos o que está próximo de acontecer e geramos os alertas.
+    await processarAlertasEEnviarNotificacoes();
+    
+    // 2. DEPOIS, atualizamos o status do que já deveria ter acontecido.
+    await atualizarStatusManutencoes();
+
   } catch (err) {
     console.error('[ERRO FATAL NA TAREFA AUTOMÁTICA]:', err);
   }
-}, checkIntervalMs);
+};
+
+const checkIntervalMs = 60 * 1000; // 1 minuto
+setInterval(executarTarefasDeFundo, checkIntervalMs);
 
 // --- 10. Inicialização do Servidor ---
 app.listen(PORT, () => {
   console.log(`Servidor backend a rodar na porta ${PORT}`);
+  
+  // Executa a verificação inicial na ordem correta também.
   console.log('Executando verificação inicial de tarefas...');
-  try {
-    atualizarStatusManutencoes();
-    processarAlertasEEnviarNotificacoes();
-  } catch (err) {
-    console.error('[ERRO NA VERIFICAÇÃO INICIAL]:', err);
-  }
+  executarTarefasDeFundo();
 });
