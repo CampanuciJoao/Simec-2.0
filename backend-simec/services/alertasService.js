@@ -1,7 +1,7 @@
 // Ficheiro: simec/backend-simec/services/alertasService.js
-// VERSÃO 6.1 (FINAL - Alertas Internos Detalhados + Notificações por E-mail Reintegradas)
-// Descrição: Serviço de alertas com lógica completa para o sistema e para notificações por e-mail,
-//            conforme os requisitos de flexibilidade e antecedência.
+// VERSÃO 6.2 (FINAL CORRIGIDO - Lógica de Alerta Único para Manutenção)
+// Descrição: Serviço de alertas com lógica completa para o sistema e para notificações por e-mail.
+//            A geração de alertas de manutenção foi refinada para evitar redundância.
 
 import prisma from './prismaService.js';
 import { enviarEmail } from './emailService.js';
@@ -73,13 +73,25 @@ export async function atualizarStatusManutencoes() {
   }
 }
 
+// ========================================================================
+// >> INÍCIO DA SEÇÃO MODIFICADA <<
+// ========================================================================
+
 async function gerarAlertasDeProximidadeManutencao() {
   const agora = new Date();
-  const PONTOS_VERIFICACAO_MINUTOS = [
-    { limiar: 60 * 24 * 7, prioridade: 'Baixa', label: '7d', texto: 'em 7 dias' },
-    { limiar: 60 * 24, prioridade: 'Baixa', label: '24h', texto: 'em 24 horas' },
-    { limiar: 60, prioridade: 'Media', label: '1h', texto: 'em 1 hora' },
+
+  // Pontos de verificação para o INÍCIO da manutenção, ordenados do mais próximo ao mais distante
+  const PONTOS_INICIO = [
     { limiar: 10, prioridade: 'Alta', label: '10min', texto: 'em 10 minutos' },
+    { limiar: 60, prioridade: 'Media', label: '1h', texto: 'em 1 hora' },
+    { limiar: 60 * 24, prioridade: 'Baixa', label: '24h', texto: 'em 24 horas' },
+    { limiar: 60 * 24 * 7, prioridade: 'Baixa', label: '7d', texto: 'em 7 dias' },
+  ];
+
+  // Pontos de verificação para o FIM da manutenção
+  const PONTOS_FIM = [
+    { limiar: 10, prioridade: 'Alta', label: '10min', texto: 'em 10 minutos' },
+    { limiar: 60, prioridade: 'Media', label: '1h', texto: 'em 1 hora' },
   ];
 
   const manutencoesProximas = await prisma.manutencao.findMany({
@@ -95,30 +107,52 @@ async function gerarAlertasDeProximidadeManutencao() {
   for (const manutencao of manutencoesProximas) {
     const tipoEvento = manutencao.status === 'Agendada' ? 'início' : 'fim';
     const dataAlvo = tipoEvento === 'início' ? manutencao.dataHoraAgendamentoInicio : manutencao.dataHoraAgendamentoFim;
+    const pontosDeVerificacao = tipoEvento === 'início' ? PONTOS_INICIO : PONTOS_FIM;
+    
     if (!dataAlvo) continue;
 
     const minutosRestantes = Math.round((dataAlvo.getTime() - agora.getTime()) / 60000);
 
-    for (const ponto of PONTOS_VERIFICACAO_MINUTOS) {
+    // Itera nos pontos de verificação (do mais próximo para o mais distante)
+    for (const ponto of pontosDeVerificacao) {
       if (minutosRestantes > 0 && minutosRestantes <= ponto.limiar) {
-        const idAlerta = `manut-${tipoEvento}-${manutencao.id}-${ponto.label}`;
-        const alertaExistente = await prisma.alerta.findUnique({ where: { id: idAlerta } });
+        
+        // Verifica se QUALQUER alerta de proximidade para este evento já foi criado
+        const algumAlertaJaExiste = await prisma.alerta.findFirst({
+            where: { id: { startsWith: `manut-prox-${tipoEvento}-${manutencao.id}-` } }
+        });
 
-        if (!alertaExistente) {
-          const evento = tipoEvento === 'início' ? 'inicia' : 'termina';
-          const titulo = `Manutenção ${evento} ${ponto.texto}`;
+        // Se nenhum alerta de proximidade para este evento foi criado ainda, criamos o nosso.
+        if (!algumAlertaJaExiste) {
+          const idAlerta = `manut-prox-${tipoEvento}-${manutencao.id}-${ponto.label}`;
+          const titulo = `Manutenção ${tipoEvento === 'início' ? 'inicia' : 'termina'} ${ponto.texto}`;
           const subtitulo = `OS ${manutencao.numeroOS} - Equip: ${manutencao.equipamento.modelo} (${manutencao.equipamento.tag})`;
           
           await prisma.alerta.create({
-            data: { id: idAlerta, titulo, subtitulo, data: dataAlvo, prioridade: ponto.prioridade, tipo: 'Manutenção', link: `/manutencoes/detalhes/${manutencao.id}`},
+            data: {
+              id: idAlerta,
+              titulo,
+              subtitulo,
+              data: dataAlvo,
+              prioridade: ponto.prioridade,
+              tipo: 'Manutenção',
+              link: `/manutencoes/detalhes/${manutencao.id}`,
+            },
           });
-          console.log(`[ALERTA PROXIMIDADE] Alerta '${ponto.label}' gerado para a OS ${manutencao.numeroOS}.`);
-          break;
+          console.log(`[ALERTA MANUTENÇÃO] Alerta mais relevante ('${ponto.label}') gerado para ${tipoEvento} da OS ${manutencao.numeroOS}.`);
         }
+        
+        // Paramos o loop pois já encontramos (ou criamos) o alerta mais relevante.
+        break; 
       }
     }
   }
 }
+
+// ========================================================================
+// >> FIM DA SEÇÃO MODIFICADA <<
+// ========================================================================
+
 
 // ==========================================================================
 // SEÇÃO DE CONTRATOS E SEGUROS
@@ -253,14 +287,9 @@ async function verificarVencimentoSeguros() {
 export async function processarAlertasEEnviarNotificacoes() {
   console.log(`[Serviço de Alertas] Iniciando verificação completa...`);
   try {
-    // Processa alertas internos para todos os tipos de evento
     await gerarAlertasDeProximidadeManutencao();
-    
-    // Processa alertas internos E envia e-mails para Contratos e Seguros
     await verificarVencimentoContratos();
     await verificarVencimentoSeguros();
-    
-    // Você pode adicionar a lógica de e-mail para manutenções aqui, se desejar.
   } catch (error) {
     console.error('[ERRO GERAL no Serviço de Alertas]:', error);
   }

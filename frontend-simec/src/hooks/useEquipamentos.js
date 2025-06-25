@@ -1,5 +1,5 @@
 // Ficheiro: src/hooks/useEquipamentos.js
-// VERSÃO CORRIGIDA - COM useCallback PARA PREVENIR LOOPS DE RENDERIZAÇÃO
+// VERSÃO ATUALIZADA - Exportando o setter para o filtro
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { getEquipamentos, getUnidades, deleteEquipamento } from '../services/api';
@@ -89,10 +89,6 @@ export const useEquipamentos = () => {
     );
   };
   
-  // ==========================================================================
-  // >> CORREÇÃO PRINCIPAL APLICADA AQUI <<
-  // As funções que alteram o estado são envolvidas em useCallback.
-  // ==========================================================================
   const handleFilterChange = useCallback((key, value) => {
     setFiltros(prev => ({ ...prev, [key]: value }));
   }, []);
@@ -113,13 +109,18 @@ export const useEquipamentos = () => {
     unidadesDisponiveis,
     loading,
     error,
+    // ========================================================================
+    // >> ALTERAÇÃO FOCADA AQUI <<
+    // Adicionamos `setFiltros` ao objeto de retorno para que a página possa usá-lo.
+    // ========================================================================
+    setFiltros,
     controles: {
       searchTerm,
       filtros,
       sortConfig,
       handleSearchChange,
-      handleFilterChange, // Agora é estável
-      requestSort,        // Agora é estável
+      handleFilterChange,
+      requestSort,
     },
     removerEquipamento,
     atualizarStatusLocalmente,

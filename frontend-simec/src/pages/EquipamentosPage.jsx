@@ -1,5 +1,5 @@
 // Ficheiro: src/pages/EquipamentosPage.jsx
-// VERSÃO CORRIGIDA - COM DEPENDÊNCIAS DO useEffect CORRETAS
+// VERSÃO 5.1 - LÓGICA DE FILTRO SIMPLIFICADA E DIRETA
 
 import React, { useMemo, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
@@ -15,7 +15,6 @@ import { formatarData as formatarDataParaBR } from '../utils/timeUtils';
 
 import '../styles/components/tables.css';
 
-// --- FUNÇÃO AUXILIAR PARA COR DA LINHA ---
 const getRowHighlightClass = (status) => {
   const statusClass = status?.replace(/\s+/g, '').toLowerCase() || 'default';
   const highlightable = {
@@ -27,6 +26,8 @@ const getRowHighlightClass = (status) => {
   return highlightable[statusClass] || '';
 };
 
+// A função mapLabelToStatusEnum foi removida pois não é mais necessária.
+
 function EquipamentosPage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -37,6 +38,7 @@ function EquipamentosPage() {
     unidadesDisponiveis,
     loading,
     error,
+    setFiltros,
     controles,
     removerEquipamento,
     atualizarStatusLocalmente
@@ -48,20 +50,14 @@ function EquipamentosPage() {
     openModal: abrirModalExclusao,
     closeModal: fecharModalExclusao
   } = useModal();
-
-  // ==========================================================================
-  // >> CORREÇÃO PRINCIPAL APLICADA AQUI <<
-  // O useEffect agora depende de 'location.state' e 'handleFilterChange',
-  // mas como handleFilterChange foi estabilizada com useCallback, este efeito
-  // só será executado quando a localização realmente mudar.
-  // ==========================================================================
+  
   useEffect(() => {
     if (location.state?.filtroStatusInicial) {
-      controles.handleFilterChange('status', location.state.filtroStatusInicial);
-      // Limpa o estado da localização para evitar que o filtro seja reaplicado
+      const statusEnumValue = location.state.filtroStatusInicial;
+      setFiltros(prevFiltros => ({ ...prevFiltros, status: statusEnumValue }));
       navigate(location.pathname, { replace: true, state: {} });
     }
-  }, [location.state, controles.handleFilterChange, navigate, location.pathname]);
+  }, [location.state, setFiltros, navigate, location.pathname]);
 
   const confirmarExclusao = () => {
     if (equipamentoParaExcluir) {
@@ -110,36 +106,35 @@ function EquipamentosPage() {
                   <th className="col-text-left sortable-header" onClick={() => controles.requestSort('modelo')}>Modelo <FontAwesomeIcon icon={controles.sortConfig.key === 'modelo' ? (controles.sortConfig.direction === 'ascending' ? faSortUp : faSortDown) : faSort} className={controles.sortConfig.key === 'modelo' ? 'sort-arrow active' : 'sort-arrow'}/></th><th>Nº Série (Tag)</th><th>Tipo</th><th>Unidade</th><th>Fabricante</th><th>Data Inst.</th><th>Status</th><th className="col-text-right">Ações</th>
                 </tr>
               </thead>
-      <tbody>
-        {loading ? (
-          <tr><td colSpan="8" className="table-message"><FontAwesomeIcon icon={faSpinner} spin /> Carregando dados...</td></tr>
-        ) : equipamentos.length === 0 ? (
-          <tr><td colSpan="8" className="table-message">Nenhum equipamento encontrado.</td></tr>
-        ) : (
-          equipamentos.map((equip) => (
-            <tr key={equip.id} className={getRowHighlightClass(equip.status)}>
-             {/* Adicione os data-label correspondentes a cada <th> */}
-              <td data-label="Modelo" className="col-text-left">{equip.modelo}</td>
-              <td data-label="Nº Série (Tag)">{equip.tag}</td>
-              <td data-label="Tipo">{equip.tipo}</td>
-              <td data-label="Unidade">{equip.unidade?.nomeSistema || 'N/A'}</td>
-              <td data-label="Fabricante">{equip.fabricante}</td>
-              <td data-label="Data Inst.">{formatarDataParaBR(equip.dataInstalacao)}</td>
-              <td data-label="Status">
-            <StatusSelector 
-                equipamento={equip} 
-                onSuccessUpdate={atualizarStatusLocalmente} 
-            />
-            </td>
-             <td data-label="Ações" className="actions-cell col-text-right">
-              <Link to={`/equipamentos/detalhes/${equip.id}`} className="btn-action view" title="Ver Detalhes"><FontAwesomeIcon icon={faEye} /></Link>
-              <button onClick={() => navigate(`/cadastros/equipamentos/editar/${equip.id}`)} className="btn-action edit" title="Editar"><FontAwesomeIcon icon={faEdit} /></button>
-              {user?.role === 'admin' && <button onClick={() => abrirModalExclusao(equip)} className="btn-action delete" title="Excluir"><FontAwesomeIcon icon={faTrashAlt} /></button>}
-            </td>
-          </tr>
-          ))
-         )}
-      </tbody>
+              <tbody>
+                {loading ? (
+                   <tr><td colSpan="8" className="table-message"><FontAwesomeIcon icon={faSpinner} spin /> Carregando dados...</td></tr>
+                ) : equipamentos.length === 0 ? (
+                  <tr><td colSpan="8" className="table-message">Nenhum equipamento encontrado.</td></tr>
+                ) : (
+                  equipamentos.map((equip) => (
+                    <tr key={equip.id} className={getRowHighlightClass(equip.status)}>
+                      <td data-label="Modelo" className="col-text-left">{equip.modelo}</td>
+                      <td data-label="Nº Série (Tag)">{equip.tag}</td>
+                      <td data-label="Tipo">{equip.tipo}</td>
+                      <td data-label="Unidade">{equip.unidade?.nomeSistema || 'N/A'}</td>
+                      <td data-label="Fabricante">{equip.fabricante}</td>
+                      <td data-label="Data Inst.">{formatarDataParaBR(equip.dataInstalacao)}</td>
+                      <td data-label="Status">
+                        <StatusSelector 
+                            equipamento={equip} 
+                            onSuccessUpdate={atualizarStatusLocalmente} 
+                        />
+                      </td>
+                      <td data-label="Ações" className="actions-cell col-text-right">
+                        <Link to={`/equipamentos/detalhes/${equip.id}`} className="btn-action view" title="Ver Detalhes"><FontAwesomeIcon icon={faEye} /></Link>
+                        <button onClick={() => navigate(`/cadastros/equipamentos/editar/${equip.id}`)} className="btn-action edit" title="Editar"><FontAwesomeIcon icon={faEdit} /></button>
+                        {user?.role === 'admin' && <button onClick={() => abrirModalExclusao(equip)} className="btn-action delete" title="Excluir"><FontAwesomeIcon icon={faTrashAlt} /></button>}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
             </table>
           </div>
         </section>
